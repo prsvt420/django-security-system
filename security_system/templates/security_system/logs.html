@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Security System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .logs {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            height: 100vh;
+            width: 100vw;
+            background-color: black;
+            color: rgb(207, 203, 203);
+            overflow-y: scroll;
+
+            p {
+                margin-bottom: 10px;
+
+                font-size: 20px;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="logs">
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+        function updateLogs() {
+        $.ajax({
+            url: '{% url 'security_system:logs' %}',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                $('.logs').html(data.logs.map(log => {
+                    if (log.includes('WARNING')) {
+                        return `<p style="color: red;">${log}</p>`;
+                    } else {
+                        return `<p>${log}</p>`;
+                    }
+                }).join(''));
+            },
+        });
+    }
+    updateLogs();
+    setInterval(updateLogs, 2000);
+</script>
+
+</body>
+</html>
